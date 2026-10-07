@@ -1,6 +1,6 @@
 ---
 name: prototype
-description: Use when prototyping logic or UI to answer a design question.
+description: Use when prototyping logic or UI for a design question.
 ---
 
 # Prototype
