@@ -4,7 +4,7 @@ Skills I use daily for code work.
 
 ## User-invoked
 
-Reachable only when you type them (Claude Code: `disable-model-invocation: true`; Codex: `policy.allow_implicit_invocation: false` in `agents/openai.yaml`).
+Configured for explicit user invocation in Claude Code (`disable-model-invocation: true`) and Codex (`policy.allow_implicit_invocation: false` in `agents/openai.yaml`). Hermes does not enforce those flags as explicit-only; see [host-specific invocation](../productivity/writing-for-agents/SKILL-MECHANICS.md#host-behavior).
 
 - **[ask-matt](./ask-matt/SKILL.md)**: Ask which skill or flow fits your situation. A router over the user-invoked skills in this repo.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `GLOSSARY.md` and ADRs inline.
