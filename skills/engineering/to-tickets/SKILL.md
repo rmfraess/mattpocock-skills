@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker (edges as text in one file per ticket locally, or native blocking links on a real tracker).
+description: Use when splitting agreed work into verifiable tickets.
 disable-model-invocation: true
 ---
 
@@ -39,9 +39,11 @@ Give each ticket its **blocking edges**: the other tickets that must complete be
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket; green is promised only there.
 
+Before preview or publication, check the ticket set as one graph: every in-scope requirement is covered, acceptance criteria are observable and owned by their ticket, all necessary blockers are present, and dependencies are necessary and acyclic. Keep parent-child hierarchy distinct from blocking edges.
+
 ### 4. Quiz the user
 
-Present the proposed breakdown as a numbered list. For each ticket, show:
+Present a concise breakdown summary as a numbered list, not the complete ticket bodies or every acceptance criterion. For each ticket, show:
 
 - **Title**: short descriptive name
 - **Blocked by**: which other tickets (if any) must complete first
@@ -53,7 +55,7 @@ Ask the user:
 - Are the blocking edges correct: does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
 
-Iterate until the user approves the breakdown.
+Iterate on the summary until the user approves its granularity and dependency shape. Do not require the user to review the full payload or every acceptance criterion before publication.
 
 ### 5. Publish the tickets to the configured tracker
 
@@ -63,6 +65,8 @@ Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. If the source was an existing issue, make each ticket its sub-issue (tracker doc's operation). Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+
+After publication, read each ticket back and verify its body, parent relationship where supported, blocking links, and mapped labels. Report partial failures rather than claiming the whole set was published successfully.
 
 Do NOT close or modify any parent issue.
 

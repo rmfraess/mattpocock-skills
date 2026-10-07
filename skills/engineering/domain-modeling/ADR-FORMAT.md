@@ -1,8 +1,11 @@
 # ADR Format
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc.
+Place an ADR in the directory that owns the decision:
 
-Create the `docs/adr/` directory lazily: only when the first ADR is needed.
+- In a single-context repo, use the root `docs/adr/`.
+- In a multi-context repo with a root `GLOSSARY-MAP.md`, use the context-specific `docs/adr/` described by the map for a context decision. Use root `docs/adr/` for a system-wide decision.
+
+Create the chosen `docs/adr/` directory lazily, only when the first ADR is needed there.
 
 ## Template
 
@@ -24,7 +27,7 @@ Only include these when they add genuine value. Most ADRs won't need them.
 
 ## Numbering
 
-Scan `docs/adr/` for the highest existing number and increment by one.
+Scan the actual destination directory for its highest existing number and increment by one. Each context-specific directory has its own sequence; do not number from another context's ADRs.
 
 ## When to offer an ADR
 

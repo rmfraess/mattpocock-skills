@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed."
+description: Use when turning agreed decisions into a project spec.
 disable-model-invocation: true
 ---
 
@@ -16,7 +16,7 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below. A request limited to drafting or review does not authorize publication. A direct `/to-spec` invocation or explicit request to publish authorizes publication, so do not ask for redundant confirmation. If the tracker, parent, or publication target is unresolved, clarify before publishing. Apply the configured `ready-for-agent` triage label; no additional triage is needed. The published spec issue remains the parent/completeness anchor for later child implementation tickets, which link back to it. Read back the published issue body and mapped labels, verify them, and return the issue link; report any failed verification.
 
 <spec-template>
 
@@ -30,7 +30,7 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of user stories where they clarify user-visible outcomes. Cover the agreed scope completely without duplication, and keep the list proportional to the work. Each story should use this format:
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
@@ -38,7 +38,7 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+For architectural or refactoring work, use concrete outcomes and invariants in the relevant sections instead of forcing stories that add no meaning.
 
 ## Implementation Decisions
 
@@ -70,6 +70,6 @@ A description of the things that are out of scope for this spec.
 
 ## Further Notes
 
-Any further notes about the feature.
+Any further notes about the feature, including unresolved decisions. State what remains unknown rather than inventing an answer.
 
 </spec-template>

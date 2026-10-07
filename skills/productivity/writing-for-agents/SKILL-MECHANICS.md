@@ -4,19 +4,25 @@ The skill-specific branch of [`writing-for-agents`](SKILL.md): what changes when
 
 ## Invocation
 
-Two choices, trading the two loads:
+Invocation is host-specific. The same skill package can be user-invoked in one host and discoverable by the model in another.
 
-- A **model-invoked** skill keeps a `description`, so the agent can fire it autonomously, and other skills can reach it. You can still type its name: model-invocation always _includes_ user reach; a description only ever adds agent discovery, never removes the human's. The description is the skill's top-level context pointer, forced to stay loaded at all times: permanent context load in exchange for discoverability. A model-invoked skill whose content is all reference is also one home for shared reference: another skill can invoke it, so reference needed by several skills lives in one place. Mechanics: omit `disable-model-invocation`, and write a model-facing description carrying the trigger branches (the pointer-writing rules in `SKILL.md` apply in full).
-- A **user-invoked** skill strips the description from the agent's reach: only the human typing its name can invoke it, and no other skill can. Zero context load, but it spends cognitive load: you are the index that must remember it exists. Mechanics: set `disable-model-invocation: true`; the `description` becomes human-facing: a one-line summary, trigger lists stripped.
+- A **model-invoked** skill is available for automatic selection in hosts that index its description. It remains available for explicit user invocation. The description is a context pointer, with permanent context load in exchange for discoverability. A reference-only skill can also be shared by other skills when the host supports dependency loading. Use the host's documented metadata and discovery behavior.
+- A **user-invoked** skill is limited to explicit user invocation only in hosts that enforce that setting. This reduces automatic-discovery load at the cost of human cognitive load. The metadata that expresses this mode is host-specific.
 
-Pick model-invocation only when the agent must reach the skill on its own, or another skill must. If it only ever fires by hand, make it user-invoked and pay no context load.
+### Host behavior
 
-Shared reference that two user-invoked skills both need can live in neither: with no descriptions, neither can fire the other. Push it to a plain file outside the skill system: external reference any skill can point at.
+- **Claude Code**: `disable-model-invocation: true` marks a skill as user-invoked for that host.
+- **Codex**: `policy.allow_implicit_invocation: false` in `agents/openai.yaml` expresses the adapter's user-invoked mode.
+- **Hermes**: tested Hermes does not enforce either foreign manual-only field. Its own skill index and slash-command behavior determine discovery and explicit invocation. Load another skill's instructions with `skill_view(name="...")`. Loading instructions is not permission to perform that skill's actions.
+
+Choose model-invocation when the target host should discover the skill or when another skill needs to load it. Use user-invocation only when the target host supports and enforces that boundary. Do not treat adapter metadata as portable access control.
+
+Shared reference needed by two user-invoked skills can live in neither in hosts that prevent model-to-skill loading. In that case, put it in a plain file both can point to. In Hermes, `skill_view` can load skill instructions regardless of those foreign flags, so follow Hermes behavior instead of generalizing the restriction.
 
 ## Splitting by invocation
 
-The invocation cut of splitting (the sequence cut lives in `SKILL.md`): split off a model-invoked skill when you have a distinct leading word that should trigger it on its own (a trigger word you actually use in your prompts), or another skill must reach it. You pay context load for the new always-loaded description, so that independent reach has to be worth it.
+The invocation cut of splitting (the sequence cut lives in `SKILL.md`): split off a model-invoked skill when you have a distinct leading word that should trigger it on its own, or another skill must reach it through the target host's dependency mechanism. You pay context load for the new always-loaded description, so that independent reach has to be worth it.
 
 ## Router skills
 
-When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each, so the human has one skill to remember instead of many. It can only hint, never fire them: user-invoked skills have no description, so nothing but the human can reach them.
+When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each, so the human has one skill to remember instead of many. Whether the router can load another skill depends on the target host. A host that enforces user-only metadata may let it hint but not load; Hermes can load skill instructions with `skill_view` even when foreign metadata says user-invoked.

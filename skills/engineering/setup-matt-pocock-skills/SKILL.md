@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Use when setting up repo guidance for engineering skills."
 disable-model-invocation: true
 ---
 
@@ -21,7 +21,7 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
+- Project instruction files from the repo root through the current directory: identify the active harness and the file or layered files it actually reads. For Hermes, check `.hermes.md` or `HERMES.md`, then `AGENTS.override.md`, `AGENTS.md`, and `CLAUDE.md` in that precedence order. Read applicable `AGENTS.md` guidance from root to current directory. Is there already an `## Agent skills` section in the effective target?
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/`: does this skill's prior output already exist?
@@ -64,22 +64,20 @@ Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSS
 
 Show the user a draft of:
 
-- The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
+- The `## Agent skills` block to add to the effective project instruction file selected in step 4. If no applicable instruction file exists, recommend `AGENTS.md` as the draft target.
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
 
 Let them edit before writing.
 
 ### 4. Write
 
-**Pick the file to edit:**
+**Pick the effective project instruction file:**
 
-- If `CLAUDE.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create; don't pick for them.
+- Use the file or layered files the active harness actually reads. For Hermes, prefer its applicable `.hermes.md` or `HERMES.md` context, then `AGENTS.override.md`, `AGENTS.md`, and `CLAUDE.md`. Read applicable `AGENTS.md` guidance root-to-cwd when it is layered.
+- Do not choose `CLAUDE.md` only because it exists. Select the active harness's effective instruction target.
+- If no applicable instruction file exists, recommend `AGENTS.md` in the existing draft-confirmation step and create it only after the user confirms the draft. Do not ask for a second confirmation solely to choose that default.
 
-Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
-
-If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
+If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Preserve all surrounding user content.
 
 The block:
 

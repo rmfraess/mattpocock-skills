@@ -1,11 +1,11 @@
 ---
 name: diagnosing-bugs
-description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+description: Use when diagnosing hard bugs or performance regressions.
 ---
 
 # Diagnosing Bugs
 
-A discipline for hard bugs. Skip phases only when explicitly justified.
+A discipline for hard bugs. A quick explanatory question about a known failure does not by itself select this full workflow; use it when diagnosis is requested or the problem needs the full investigation. Once selected, keep the phase gates and skip a phase only when explicitly justified.
 
 When exploring the codebase, read `GLOSSARY.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
@@ -14,6 +14,14 @@ When exploring the codebase, read `GLOSSARY.md` (if it exists) to get a clear me
 This skill has you show commands, outputs and captured artifacts. **Redact every secret first**: write `<REDACTED>` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal.
 
 If the redacted output is not enough to diagnose the bug, say so and ask the user.
+
+## Existing evidence
+
+Before building a loop, inspect reproduction commands, tests, and captured results supplied by the user or an authorized caller. Credit only phase criteria the evidence demonstrates: the invocation or test, expected and actual behavior, and relevant code, inputs, and environment must be available and applicable to this investigation. A summary or proposed diagnosis is a lead, not a completed phase. If relevant state changed or applicability cannot be established, rerun a permitted check or keep the criterion outstanding.
+
+A reproduction proves the symptom, not its cause. Credit prior causal investigation only when it includes a falsifiable prediction and an observed discriminating result supporting that cause over alternatives. Otherwise retain hypothesis testing. Attribute reused evidence and state which criteria it satisfies, rather than claiming personal execution or manufacturing hypotheses to repeat demonstrated causal work.
+
+Perform only permitted operations. Never replay a prohibited, destructive, or consumed operation merely to satisfy a gate. Use a permitted equivalent that tests the same acceptance condition; if none is available, stop at that verification boundary and report the outstanding criterion. Prior failing evidence does not establish success: Phase 5 and Phase 6 still require verification against the finished change.
 
 ## Phase 1: Build a feedback loop
 
@@ -56,18 +64,18 @@ Stop and say so explicitly. List what you tried. Ask the user for: (a) access to
 
 ### Completion criterion: a tight loop that goes red
 
-Phase 1 is done when the loop is **tight** and **red-capable**: you can name **one command** (a script path, a test invocation, a curl) that you have **already run at least once** (show the invocation and its output, redacted), and that is:
+Phase 1 is done when the loop is **tight** and **red-capable**: you can name **one command** (a script path, a test invocation, a curl) that you or an authorized caller have **already run at least once** (show the invocation and its output, redacted, qualifying supplied results under Existing evidence), and that is:
 
 - [ ] **Red-capable**: it drives the actual bug code path and asserts the **user's exact symptom**, so it can go red on this bug and green once fixed. Not "runs without erroring"; it must be able to _catch this specific bug_.
 - [ ] **Deterministic**: same verdict every run (flaky bugs: a pinned, high reproduction rate, per above).
 - [ ] **Fast**: seconds, not minutes.
-- [ ] **Agent-runnable**: you can run it unattended; a human in the loop only via `scripts/hitl-loop.template.sh`.
+- [ ] **Authorized-runnable**: an authorized operator can run it unattended; a human in the loop only via `scripts/hitl-loop.template.sh`. Apply the permitted-equivalent rule under Existing evidence when replay is unavailable.
 
 If you catch yourself reading code to build a theory before this command exists, **stop: jumping straight to a hypothesis is the exact failure this skill prevents.** No red-capable command, no Phase 2.
 
 ## Phase 2: Reproduce + minimise
 
-Run the loop. Watch it go red as the bug appears.
+Run the loop unless applicable evidence already satisfies the criteria below. Watch it go red as the bug appears, or cite the qualifying recorded runs.
 
 Confirm:
 
@@ -83,11 +91,11 @@ Why bother: a minimal repro shrinks the hypothesis space in Phase 3 (fewer movin
 
 Done when **every remaining element is load-bearing**: removing any one of them makes the loop go green.
 
-Do not proceed until you have reproduced **and** minimised.
+Do not proceed until reproduction **and** minimisation are demonstrated by permitted runs or applicable existing evidence.
 
 ## Phase 3: Hypothesise
 
-Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
+For unresolved causes, generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea. Credit already-demonstrated causal work under Existing evidence instead of repeating it.
 
 Each hypothesis must be **falsifiable**: state the prediction it makes.
 

@@ -27,6 +27,11 @@ ENV_FILE="${ENV_FILE:-.env}"
 WRITTEN_ENV=()    # KEYs written to ENV_FILE this run
 WRITTEN_SECRET=() # secret NAMEs set this run
 SKIPPED=()        # things we couldn't do (e.g. gh missing)
+SECRET_KEYS=()    # keys captured with hidden input
+GITHUB_REPO="${GITHUB_REPO:-}"
+_GITHUB_REPO_CHECKED=0
+_GITHUB_REPO_READY=0
+unset _GITHUB_REPO_CONFIRMED # Internal state, never an inherited target.
 
 # _clear wipes the terminal so only the current step is on screen. No-op when
 # output isn't a terminal, so piped logs stay readable.
@@ -88,8 +93,13 @@ confirm() {
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any.
+# Shared variable-name validation for prompts, local writes, and GitHub writes.
+_valid_name() {
+  [[ "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] || { warn "invalid variable name"; return 1; }
+}
+
 _existing() {
+  _valid_name "$1" || return 1
   [[ -f "$ENV_FILE" ]] || return 1
   local line; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
   printf '%s' "${line#*=}"
@@ -99,6 +109,7 @@ _existing() {
 # a default on re-runs (Enter keeps it). Visible input (non-secret).
 ask() {
   local key="$1" prompt="$2" current input
+  _valid_name "$key" || return 1
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
@@ -113,6 +124,7 @@ ask() {
 # ask_secret KEY "Prompt" is like ask, but input is hidden.
 ask_secret() {
   local key="$1" prompt="$2" current input
+  _valid_name "$key" || return 1
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
@@ -123,47 +135,106 @@ ask_secret() {
   printf '\n'
   [[ -z "$input" && -n "$current" ]] && input="$current"
   printf -v "$key" '%s' "$input"
+  SECRET_KEYS+=("$key")
 }
 
 # write_env KEY VALUE upserts KEY=VALUE into ENV_FILE (creates it; replaces
 # any existing line). Idempotent.
 write_env() {
-  local key="$1" value="$2" tmp
-  touch "$ENV_FILE"
-  tmp=$(mktemp)
-  grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf '%s=%s\n' "$key" "$value" >> "$tmp"
-  mv "$tmp" "$ENV_FILE"
+  local key="$1" value="$2" secret_key
+  _valid_name "$key" || return 1
+  if [[ "$value" == *$'\n'* || "$value" == *$'\x0d'* ]]; then
+    warn "refusing multiline value for $key"
+    return 1
+  fi
+  for secret_key in "${SECRET_KEYS[@]}"; do
+    if [[ "$key" == "$secret_key" ]]; then
+      command -v git >/dev/null 2>&1 || { warn "cannot verify secret destination without Git"; return 1; }
+      (
+        cd -- "$(dirname -- "$ENV_FILE")" || return 1
+        if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" == true ]]; then
+          git check-ignore -- "$(basename -- "$ENV_FILE")" >/dev/null 2>&1 || {
+            warn "refusing secret write: $ENV_FILE must be ignored and untracked"
+            return 1
+          }
+        fi
+      ) || return 1
+    fi
+  done
+  (
+    local tmp status
+    tmp=$(mktemp "${ENV_FILE}.XXXXXX") || return 1
+    trap 'rm -f -- "$tmp"' EXIT
+    trap 'exit 1' HUP INT TERM
+    if [[ -e "$ENV_FILE" ]]; then
+      if grep -vE "^${key}=" "$ENV_FILE" > "$tmp"; then
+        :
+      else
+        status=$?
+        [[ "$status" == 1 ]] || return "$status"
+      fi
+      # Preserve the separator when the old file has no final newline.
+      if [[ -s "$tmp" && -n "$(tail -c 1 "$tmp")" ]]; then
+        printf '\n' >> "$tmp" || return 1
+      fi
+    fi
+    printf '%s=%s\n' "$key" "$value" >> "$tmp" || return 1
+    mv -- "$tmp" "$ENV_FILE" || return 1
+  ) || { warn "could not write $key; original $ENV_FILE preserved"; return 1; }
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
+}
+
+# Resolve once, confirm before any remote write, and reuse the exact target.
+_github_repo() {
+  if (( _GITHUB_REPO_CHECKED )); then
+    (( _GITHUB_REPO_READY ))
+    return
+  fi
+  _GITHUB_REPO_CHECKED=1
+  command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 || return 1
+  if [[ -z "$GITHUB_REPO" ]]; then
+    GITHUB_REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner) || return 1
+  fi
+  [[ "$GITHUB_REPO" =~ ^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$ ]] || return 1
+  confirm "Write GitHub secrets/variables to $GITHUB_REPO?" || return 1
+  if [[ ! -v _GITHUB_REPO_CONFIRMED ]]; then
+    readonly _GITHUB_REPO_CONFIRMED="$GITHUB_REPO"
+  fi
+  _GITHUB_REPO_READY=1
 }
 
 # set_secret NAME VALUE sets a GitHub Actions repo secret via gh. Falls back
 # to a warning (and records it) if gh is unavailable or unauthenticated.
 set_secret() {
   local name="$1" value="$2"
-  if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    if printf '%s' "$value" | gh secret set "$name" >/dev/null 2>&1; then
+  _valid_name "$name" || return 1
+  if _github_repo; then
+    if printf '%s' "$value" | gh secret set "$name" --repo "$_GITHUB_REPO_CONFIRMED" >/dev/null 2>&1 &&
+      gh secret list --repo "$_GITHUB_REPO_CONFIRMED" --json name --jq '.[].name' | grep -Fx -- "$name" >/dev/null; then
       WRITTEN_SECRET+=("$name")
       printf '  %s✓ set%s GitHub secret %s\n' "$GREEN" "$RESET" "$name"
       return
     fi
   fi
-  SKIPPED+=("GitHub secret $name (set it manually: gh secret set $name)")
-  warn "skipped GitHub secret $name: gh not ready; set it later"
+  SKIPPED+=("GitHub secret $name (target ${_GITHUB_REPO_CONFIRMED:-${GITHUB_REPO:-unresolved}}; write or name verification incomplete)")
+  warn "GitHub secret $name incomplete; check the confirmed repository manually"
 }
 
 # set_var NAME VALUE sets a GitHub Actions repo variable (non-secret).
 set_var() {
-  local name="$1" value="$2"
-  if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    if gh variable set "$name" --body "$value" >/dev/null 2>&1; then
+  local name="$1" value="$2" actual
+  _valid_name "$name" || return 1
+  if _github_repo; then
+    if gh variable set "$name" --body "$value" --repo "$_GITHUB_REPO_CONFIRMED" >/dev/null 2>&1 &&
+      actual=$(gh variable get "$name" --repo "$_GITHUB_REPO_CONFIRMED" --json value --jq .value) &&
+      [[ "$actual" == "$value" ]]; then
       printf '  %s✓ set%s GitHub variable %s\n' "$GREEN" "$RESET" "$name"
       return
     fi
   fi
   SKIPPED+=("GitHub variable $name")
-  warn "skipped GitHub variable $name, gh not ready; set it later"
+  warn "GitHub variable $name incomplete; check the confirmed repository manually"
 }
 
 # finish clears, then shows a closing summary of everything configured.

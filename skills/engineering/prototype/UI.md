@@ -25,7 +25,7 @@ If the prototype is for something that doesn't yet have a page but *would natura
 
 Only use this when the thing being prototyped genuinely has no existing page to live inside (e.g. an entirely new top-level surface, or a flow that can't be embedded anywhere sensible).
 
-Create a **throwaway route** following whatever routing convention the project already uses. Don't invent a new top-level structure. Name it so it's obviously a prototype (e.g. include the word `prototype` in the path or filename). Same `?variant=` pattern.
+Create a **development-only throwaway route** following whatever routing convention the project already uses. Don't invent a new top-level structure. Name it so it's obviously a prototype (e.g. include the word `prototype` in the path or filename). Use the same `?variant=` pattern, and keep the route out of production.
 
 Before committing to sub-shape B, sanity-check: is there really no existing page this could be embedded in? An empty route hides design problems that a populated one would expose.
 
@@ -59,20 +59,24 @@ Create a single switcher component on the route:
 
 ```tsx
 // pseudo-code, adapt to the project's framework
-const variant = searchParams.get('variant') ?? 'A';
+const variants = ['A', 'B', 'C'];
+const requested = searchParams.get('variant');
+const knownVariant = requested !== null && variants.includes(requested);
+const prototypeActive = process.env.NODE_ENV !== 'production' && knownVariant;
+if (!prototypeActive || requested === null) return <ExistingPage {...data} />;
 return (
   <>
-    {variant === 'A' && <VariantA {...data} />}
-    {variant === 'B' && <VariantB {...data} />}
-    {variant === 'C' && <VariantC {...data} />}
-    <PrototypeSwitcher variants={['A','B','C']} current={variant} />
+    {requested === 'A' && <VariantA {...data} />}
+    {requested === 'B' && <VariantB {...data} />}
+    {requested === 'C' && <VariantC {...data} />}
+    <PrototypeSwitcher variants={variants} current={requested} />
   </>
 );
 ```
 
 For sub-shape A (existing page): keep all the existing data fetching above the switcher; only the rendered subtree changes per variant.
 
-For sub-shape B (new page): the throwaway route under `/prototype/<name>` mounts the same switcher.
+For sub-shape B (new page): a development-only throwaway route under `/prototype/<name>` mounts the same switcher. Keep it out of production.
 
 ### 4. Build the floating switcher
 
@@ -87,7 +91,7 @@ Behaviour:
 - Clicking an arrow updates the URL search param (use the framework's router, e.g. `router.replace` on Next, `navigate` on React Router, etc) so the variant is shareable and reload-stable.
 - Keyboard: `←` and `→` arrow keys also cycle. Don't intercept arrow keys when an `<input>`, `<textarea>`, or `[contenteditable]` is focused.
 - Visually distinct from the page (e.g. high-contrast pill, subtle shadow) so it's obviously not part of the design being evaluated.
-- Hidden in production builds: gate on `process.env.NODE_ENV !== 'production'` or an equivalent check, so a stray prototype merge can't ship the bar to users.
+- Development-only: gate both variant rendering and the switcher on `process.env.NODE_ENV !== 'production'` or an equivalent check. When mode is inactive or the URL names an unknown variant, render the existing page rather than a blank result.
 
 Put the switcher in a single shared component so both sub-shapes can reuse it. Locate it wherever shared UI lives in the project.
 
@@ -97,10 +101,10 @@ Surface the URL (and the `?variant=` keys). The user will flip through whenever 
 
 ### 6. Capture the answer and clean up
 
-Once a variant has won, capture the answer (which variant and why), then capture the prototype the way the [SKILL](SKILL.md) describes. Fold the winner into the real code and move the rest onto the throwaway branch, not into main:
+After the user states a verdict, record the answer and question, then preserve the prototype evidence as the [SKILL](SKILL.md) describes. Do not select a winner for the user or adopt a variant into production as part of this workflow. A production implementation is a separate task with its own scope:
 
-- **Sub-shape A**: fold the winner into the existing page; drop the losing variants and the switcher from main.
-- **Sub-shape B**: promote the winning variant to a real route; drop the throwaway route and the switcher from main.
+- **Sub-shape A**: keep the existing page's production rendering unchanged; any later implementation follows the user's stated direction in a separate task.
+- **Sub-shape B**: keep the prototype route development-only; any later production route is a separate implementation task.
 
 The full set of variants is the primary source, so it lands on the throwaway branch, not the bin, since variant components and the switcher left in the main branch rot fast and confuse the next reader.
 

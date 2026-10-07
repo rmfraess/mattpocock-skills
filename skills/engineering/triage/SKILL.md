@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.
+description: Use when triaging incoming issues or external pull requests.
 disable-model-invocation: true
 ---
 
@@ -75,7 +75,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 4. **Grill (if needed).** If the request needs fleshing out, call the Skill tool twice, for "grilling" and "domain-modeling", and grill it into shape a round of questions at a time, sharpening domain terms and updating `GLOSSARY.md`/ADRs inline as decisions land.
 
-5. **Apply the outcome:**
+5. **Apply the outcome.** Use the provided mapping for the selected category and state. Remove prior category and state labels as needed so exactly one category label and one state label remain, while preserving unrelated labels. Never create a missing label or substitute a different name. If a required mapping or label is missing, stop that transition and report it as incomplete. For `wontfix`, apply its mapped label before closing.
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
@@ -84,6 +84,8 @@ Show counts and a one-line summary per item. Let the maintainer pick.
      - **Rejected (bug)**: give a polite explanation, then close.
      - **Rejected (enhancement)**: write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
    - `needs-triage`: apply the role. Optional comment if there's partial progress.
+
+6. **Read back and verify.** Fetch the issue or PR after the updates. Confirm it has exactly one mapped category label and the intended mapped state label, every required comment is present with the triage disclaimer, and its open/closed status matches the outcome. If an operation fails or readback differs, report the incomplete action; do not claim the transition succeeded.
 
 ## Quick state override
 

@@ -17,7 +17,7 @@ test("user can checkout with valid cart", async () => {
 Characteristics:
 
 - Tests behavior users/callers care about
-- Uses public API only
+- Uses public interfaces, except for explicitly required storage verification at an agreed seam; asserts only the required contract
 - Survives internal refactors
 - Describes WHAT, not HOW
 - One logical assertion per test
@@ -42,10 +42,12 @@ Red flags:
 - Asserting on call counts/order
 - Test breaks when refactoring without behavior change
 - Test name describes HOW not WHAT
-- Verifying through external means instead of interface
+- Verifying incidental implementation details through external means instead of the interface
+
+Prefer public-interface checks that prove the required behavior. The database example below is bad for testing ordinary retrievability, not a blanket prohibition on explicitly required persistence or storage evidence at an agreed seam. Such evidence should assert only the required contract.
 
 ```typescript
-// BAD: Bypasses interface to verify
+// BAD for ordinary retrievability: observes storage instead of the public interface
 test("createUser saves to database", async () => {
   await createUser({ name: "Alice" });
   const row = await db.query("SELECT * FROM users WHERE name = ?", ["Alice"]);
