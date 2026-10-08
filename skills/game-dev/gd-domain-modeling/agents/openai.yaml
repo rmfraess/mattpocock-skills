@@ -1,0 +1,5 @@
+interface:
+  display_name: "Game Domain Modeling"
+  short_description: "Clarify game terms and state"
+policy:
+  allow_implicit_invocation: true

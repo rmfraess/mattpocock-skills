@@ -1,0 +1,5 @@
+interface:
+  display_name: "Game Code Review"
+  short_description: "Review game code, assets, and evidence"
+policy:
+  allow_implicit_invocation: true

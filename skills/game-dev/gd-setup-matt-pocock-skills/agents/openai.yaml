@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Setup Matt Pocock Skills"
+  short_description: "Set up repo guidance and game-work rules"
+policy:
+  allow_implicit_invocation: false

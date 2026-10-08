@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Ask Matt"
+  short_description: "Choose a suitable game-development skill"
+policy:
+  allow_implicit_invocation: false

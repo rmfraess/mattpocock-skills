@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Grill with Docs"
+  short_description: "Clarify game design and update project docs"
+policy:
+  allow_implicit_invocation: false

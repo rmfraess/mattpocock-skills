@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD To Spec"
+  short_description: "Turn agreed game work into a spec"
+policy:
+  allow_implicit_invocation: false

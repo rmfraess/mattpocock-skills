@@ -1,0 +1,5 @@
+interface:
+  display_name: "Game TDD"
+  short_description: "Test gameplay behavior test-first"
+policy:
+  allow_implicit_invocation: true

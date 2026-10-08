@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD PR"
+  short_description: "Write a game-development PR body"
+policy:
+  allow_implicit_invocation: true

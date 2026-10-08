@@ -1,0 +1,5 @@
+interface:
+  display_name: "Game Codebase Design"
+  short_description: "Design game-code interfaces and seams"
+policy:
+  allow_implicit_invocation: true

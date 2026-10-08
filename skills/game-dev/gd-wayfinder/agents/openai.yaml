@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Wayfinder"
+  short_description: "Map a large game effort as decision tickets"
+policy:
+  allow_implicit_invocation: false

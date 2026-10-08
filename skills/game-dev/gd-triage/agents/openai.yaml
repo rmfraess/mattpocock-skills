@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Triage"
+  short_description: "Triage game-project issues and PRs"
+policy:
+  allow_implicit_invocation: false

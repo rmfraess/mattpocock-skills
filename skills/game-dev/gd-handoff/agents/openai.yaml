@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Handoff"
+  short_description: "Record state for a game-development continuation"
+policy:
+  allow_implicit_invocation: false

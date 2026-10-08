@@ -1,0 +1,5 @@
+interface:
+  display_name: "Implement Game Spec"
+  short_description: "Coordinate implementation of a game-development spec"
+policy:
+  allow_implicit_invocation: false

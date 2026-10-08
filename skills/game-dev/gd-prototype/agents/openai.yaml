@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Prototype"
+  short_description: "Choose a faithful game-design experiment"
+policy:
+  allow_implicit_invocation: true

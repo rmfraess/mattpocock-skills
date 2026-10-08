@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Diagnosing Bugs"
+  short_description: "Find faithful evidence for hard game bugs"
+policy:
+  allow_implicit_invocation: true

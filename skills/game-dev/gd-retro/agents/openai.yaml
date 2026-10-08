@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD Retro"
+  short_description: "Review a game-development session retrospectively"
+policy:
+  allow_implicit_invocation: false

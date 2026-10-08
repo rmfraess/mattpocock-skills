@@ -1,0 +1,5 @@
+interface:
+  display_name: "Game Design Interview"
+  short_description: "Clarify a game-design decision"
+policy:
+  allow_implicit_invocation: false

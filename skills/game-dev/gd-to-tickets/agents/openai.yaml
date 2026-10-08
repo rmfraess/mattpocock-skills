@@ -1,0 +1,5 @@
+interface:
+  display_name: "GD To Tickets"
+  short_description: "Split game work into verifiable tickets"
+policy:
+  allow_implicit_invocation: false

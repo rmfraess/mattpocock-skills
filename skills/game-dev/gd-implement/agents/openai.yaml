@@ -1,0 +1,5 @@
+interface:
+  display_name: "Implement Game Work"
+  short_description: "Build agreed game code or content changes"
+policy:
+  allow_implicit_invocation: false
