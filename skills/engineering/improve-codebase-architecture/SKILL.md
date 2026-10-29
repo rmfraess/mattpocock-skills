@@ -24,7 +24,7 @@ This command is _informed_ by the project's domain model and built on a shared d
 
 Read `GLOSSARY-MAP.md` if present. Use it to identify each surveyed area's context, then read that context's glossary and relevant ADRs, plus relevant system-wide ADRs. Without a map, read root `GLOSSARY.md` and `docs/adr/` when present.
 
-Then spawn a sub-agent to walk the codebase. Don't follow rigid heuristics; explore organically and note where you experience friction:
+Then spawn a sub-agent with a fresh context window to walk the codebase. Don't follow rigid heuristics; explore organically and note where you experience friction:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?

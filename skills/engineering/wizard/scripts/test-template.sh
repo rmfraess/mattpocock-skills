@@ -12,6 +12,22 @@ work=$(cd "$work" && pwd)
 trap 'rm -rf -- "$work"' EXIT
 cd "$work"
 ENV_FILE=settings.txt
+# Upstream Readline/EOF handling must retain fork validation and secret tracking.
+ask VALUE "Value:" <<< 'demo input'
+[[ "$VALUE" == 'demo input' ]]
+ask_secret SECRET_VALUE "Secret:" <<< 'dummy'
+[[ "$SECRET_VALUE" == dummy && "${SECRET_KEYS[0]}" == SECRET_VALUE ]]
+for prompt in ask ask_secret; do
+  if "$prompt" VALUE "Value:" < /dev/null; then exit 1; fi
+  if "$prompt" 'BAD.KEY' "Value:" <<< demo; then exit 1; fi
+done
+printf 'VALUE=keep\n' > "$ENV_FILE"
+ask VALUE "Value:" <<< ''
+[[ "$VALUE" == keep ]]
+if ask VALUE "Value:" < /dev/null; then exit 1; fi
+ask VALUE "Value:" < <(printf partial)
+[[ "$VALUE" == partial ]]
+SECRET_KEYS=()
 printf 'OTHER=keep\nVALUE=old\nVALUE=duplicate\n' > "$ENV_FILE"
 write_env VALUE 'demo !@#$% &/=:;"'
 [[ $(< "$ENV_FILE") == $'OTHER=keep\nVALUE=demo !@#$% &/=:;"' ]]

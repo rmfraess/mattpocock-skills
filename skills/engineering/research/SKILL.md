@@ -8,7 +8,7 @@ description: Use when researching questions from primary sources.
 ## Choose the execution path
 
 - If you are already assigned the research work, apply this method directly. Do not dispatch another agent.
-- If you are the orchestrating caller and need to continue other work, dispatch one background research worker and give it the brief below. The worker performs the research itself and does not dispatch further.
+- If you are the orchestrating caller and need to continue other work, dispatch one background research worker with a fresh context window and give it the brief below. The worker performs the research itself and does not dispatch further.
 
 ## Set the brief
 

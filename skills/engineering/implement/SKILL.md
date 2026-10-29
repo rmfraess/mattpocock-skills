@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 Implement work that is already agreed in a spec, ticket, or plan settled in the conversation. Do not reopen settled design.
 
-Resolve a supplied ticket number through the configured tracker. Proceed when it identifies one ticket unambiguously; ask only when genuine ambiguity could select different work.
+Resolve a supplied ticket reference through the configured tracker and state its title before starting. Proceed when it identifies one ticket unambiguously; ask only when genuine ambiguity could select different work.
 
 Before editing, capture the starting revision with `git rev-parse HEAD` and the starting worktree status. Keep pre-existing and unrelated changes distinct from this run.
 

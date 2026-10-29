@@ -12,6 +12,7 @@ Route, recommend, and stop. Before making a claim about a target skill's behavio
 
 Use the current harness's context commands: in Hermes, `/compress` compresses the current conversation and `/new` starts a fresh one; `/clear` is surface-specific. In Claude Code, use `/compact` for compression and `/clear` for a fresh conversation. References below to compacting or clearing mean those operations in the current harness, not interchangeable command names.
 
+
 A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
 
 ## The main flow: idea → ship

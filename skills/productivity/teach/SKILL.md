@@ -15,6 +15,7 @@ Keep package support files and workspace outputs distinct. Files such as `MISSIO
 
 The state of the user's learning is captured in the workspace in several files:
 
+
 - `MISSION.md`: A document capturing the _reason_ the user is interested in the topic. This should be used to ground all teaching. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md).
 - `./reference/*.html`: A directory of reference materials. These are the compressed learnings from the lessons - cheat sheets, reference algorithms, syntax, yoga poses, glossaries. They are the raw units of learning. They should be beautiful documents which print out well, and are designed for quick reference.
 - `RESOURCES.md`: A list of resources which can be explored to ground your teaching in contextual knowledge, or to acquire knowledge and wisdom. Use the format in [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md).
@@ -118,7 +119,7 @@ For skill acquisition, difficulty is the tool. Effortful retrieval is what build
 
 Each of these should be based on a **feedback loop**, where the user receives feedback on their performance. This feedback loop should be as tight as possible, giving feedback immediately - and ideally automatically.
 
-For quizzes, keep answer options comparable in detail and length so the correct answer is not exposed by a much longer explanation. Do not force exact word-count equality. Don't give the user clues through formatting.
+For quizzes, keep answer options comparable in detail and length so the correct answer is not exposed by a much longer explanation. Do not force exact word-count equality. Vary which position holds the correct answer across questions. Don't give the user clues through formatting or order.
 
 ## Acquiring Wisdom
 
