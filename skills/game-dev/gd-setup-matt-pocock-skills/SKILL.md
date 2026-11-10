@@ -46,17 +46,19 @@ For game-project rules, summarize applicable instructions, prior decisions, and 
 - Saving, recovery, and how to handle ambiguous results.
 - Technical verification versus creative acceptance and publication.
 
+Confirm what the project is before drafting rules; a repo name only supports a guess. If it is not a game (reverse engineering, tooling, research), skip the game guide, Editor, and creative-acceptance rules and draft rules for the project's real risks instead. For reverse-engineering projects, start from [references/reverse-engineering-rules.md](./references/reverse-engineering-rules.md). Ask for the concrete target scope (subsystem, asset or data type), not just the category, and record it as an in-scope sentence plus "other systems out of scope unless needed to locate, load, or decode the target". Users usually care about one narrow slice, and a broad purpose line invites unbounded investigation.
+
 Use the shared guide as a comparison point, not a reason to repeat settled rules or conduct an exhaustive questionnaire. Give a practical recommendation for each real choice and preserve standing authorization. If an unresolved question needs an interview, verify and load the unchanged `grilling` helper through the current harness's skill-loading tool. If a game-domain term or decision needs resolution, verify and load `gd-domain-modeling` separately. Load one skill per tool call, follow its method, and return here with the decision. Do not delegate the whole setup to another setup skill.
 
 ## 4. Draft the complete changes
 
 Use `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md` when triage is used, and `docs/agents/domain.md` for the existing tracker, label, and domain guidance layout. Record game-work rules in the effective project instruction file or closest suitable existing reference; do not introduce a mandatory document tree. Identify the instruction file the active harness actually reads. If none applies, recommend `AGENTS.md` as the draft target. Update an existing `## Agent skills` block in place; preserve everything around it. Include tracker, triage-label, or domain pointers only when the corresponding guidance will exist and be used.
 
-Show one consolidated draft of every file or section to add or change, including the exact effective instruction target. Reuse the linked templates as seeds and adjust only references needed to match the skills actually installed. Keep existing flags, labels, directory layout, and unrelated text. Let the user revise the draft. Obtain confirmation for that draft once; do not ask again for a choice already settled in the same flow.
+Show one consolidated draft of every file or section to add or change, including the exact effective instruction target. Reuse the linked templates as seeds and adjust only references needed to match the skills actually installed. Keep existing flags, labels, directory layout, and unrelated text. When a drafted rule depends on repository configuration (for example, a rule that game data stays in a gitignored folder), name the concrete path in the rule and offer the config file (such as `.gitignore`) in the same draft as a separately confirmable item. A rule that points at an ignore rule that doesn't exist yet is a leak waiting to happen. Let the user revise the draft. Obtain confirmation for that draft once; do not ask again for a choice already settled in the same flow.
 
 ## 5. Write and verify
 
-After confirmation, write only the approved documentation. Preserve surrounding content and avoid duplicate sections. Read each changed file back, verify the intended block and conventions, and follow every newly written project-document link to confirm it resolves. Report files changed, choices preserved, unresolved items, and verification results.
+After confirmation, write only the approved documentation. Preserve surrounding content and avoid duplicate sections. Read each changed file back, verify the intended block and conventions, and follow every newly written project-document link to confirm it resolves. For an ignore file, prove it with `git check-ignore -q --no-index <path>` on sample paths that must be ignored and on paths that must stay tracked (instruction files, `docs/`, `.scratch/`). Report files changed, choices preserved, unresolved items, and verification results.
 
 ## Done
 

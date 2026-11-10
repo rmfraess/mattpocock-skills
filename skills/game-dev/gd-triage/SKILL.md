@@ -1,6 +1,6 @@
 ---
 name: gd-triage
-description: Use to triage incoming game-project issues and PRs.
+description: Use when summarizing or triaging game-project issues.
 disable-model-invocation: true
 ---
 
@@ -50,7 +50,23 @@ The maintainer invokes this skill and describes what they want. Examples:
 - "Move #42 to ready-for-agent."
 - "What's ready for agents to pick up?"
 
-Triage is for incoming issues or requests, not tickets already produced by a planning workflow.
+Triage transitions are for incoming issues or requests, not tickets already produced by a planning workflow. Read-only summaries may cover either.
+
+## Read-only issue summary
+
+1. Resolve the repository from the project's tracker configuration and Git remote; ask for a repository or issue URL only if they leave the target ambiguous.
+2. Fetch the live description, state, labels, assignees and every comment. For GitHub, use `gh api repos/<owner>/<repo>/issues/<number>` for metadata and the declared comment count, then `gh api repos/<owner>/<repo>/issues/<number>/comments --paginate --jq '{page_count:length,comments:[.[] | {html_url,author:.user.login,created_at,updated_at,body}]}'`. Aggregate returned pages and reconcile the fetched count with the metadata before calling the discussion complete.
+3. Lead with the linked issue title, then summarize the request, discussion/decisions, current status, documented blockers and next steps. For a comparison-to-issue request, map each acceptance criterion to delivered, partial or unverified evidence, then separate material ticket blockers, pending creative verdicts and follow-on work owned elsewhere. A representative treatment can be technically verified without finishing the whole region or final production art. Describe unchecked criteria as tracker state, not proof that implementation is absent, and carry forward accepted coarse limitations rather than reopening them. Use counts and scope boundaries instead of an invented percent-complete estimate.
+4. Stop at the requested summary: repository/Editor investigation, label recommendations, comments and state transitions require their own scope. Read linked parent direction only when needed to resolve the issue's meaning.
+
+## Reconcile a successor ticket after milestone acceptance
+
+When asked whether completed work changes another ticket:
+
+1. Compare the successor's current body and full discussion with the predecessor's accepted scope and published evidence. Separate delivered work, unverified coverage and demonstrated defects; unchecked boxes or missing photographs do not establish missing implementation.
+2. Recommend the smallest in-place revision: name the remaining outcome, record the accepted baseline, and make the next step a remaining-gap assessment rather than another full build. Carry accepted limitations forward; keep optional refinement in its existing follow-on and parked areas outside current acceptance without deleting their eventual goals.
+3. After approval, update the title/body while preserving unrelated requirements, labels, assignees and open/closed state. Link evidence at an immutable revision. Do not close the successor merely because the predecessor passed, or start implementation merely because the user approved ticket wording.
+4. For an authorized gap assessment, reconcile section/asset groups programmatically against the complete relevant inventory. Record each group's existing evidence, unresolved boundary and next check. Keep whole-network continuity, sampled full-width contact, representative appearance and regional composition as separate claims; their coverage is not interchangeable. Put the concise result in the existing ticket, not another planning document or duplicate ticket.
 
 ## Show what needs attention
 
@@ -85,7 +101,7 @@ When external PRs are in scope, include them and mark each result `[PR]` or `[is
    - `wontfix`: close with the right explanation. If already implemented, point to verified code or saved content and do not write to the out-of-scope knowledge base. For a rejected bug, explain and close. For a rejected enhancement, follow [OUT-OF-SCOPE.md](./OUT-OF-SCOPE.md), link the record in a comment, then close.
    - `needs-triage`: apply the state; add a comment only when useful.
 
-6. **Read back and verify.** Fetch the item after updates. Confirm exactly one mapped category label and the intended mapped state label, required comments with the disclaimer, and the expected open/closed status. If an operation failed or readback differs, report the incomplete action.
+6. **Read back and verify.** For body/title-only edits, re-fetch immediately before writing and compare the body and update timestamp with the reviewed version; stop and reconcile concurrent changes. Send prose through a UTF-8 payload file or JSON stdin, not interpolated shell source: Markdown backticks inside Bash double quotes execute command substitution and can silently remove identifiers. Fetch the exact target after writing and compare the intended title/body or comment, not merely the API's success result. Verify that labels, assignees and open/closed state remain unchanged unless explicitly included in scope. For label transitions, confirm exactly one mapped category and the intended mapped state label. Preserve required triage disclaimers. If an operation failed or readback differs, report the incomplete action.
 
 ## Quick state override
 

@@ -12,7 +12,11 @@ metadata:
 
 # Game-development PR body
 
-Write the pull-request body only. Keep the base's three sections, brief prose, and smallest-useful-visual approach. Do not publish, merge, commit, push, run checks, or capture new evidence as a side effect of writing. Reuse applicable verified implementation or review evidence; state plainly when a comparison or check is unavailable or unverified.
+Write the pull-request body only. Use the template's sections as a default, with brief prose and the smallest useful visual; preserve the author's established structure when it differs. Do not publish, merge, commit, push, run checks, or capture new evidence as a side effect of writing. Reuse applicable verified implementation or review evidence; state plainly when a comparison or check is unavailable or unverified. When the user asks only to state an unverified platform, do so in one line rather than proposing environment setup or extra work.
+
+When preparing an upstream PR, inspect the author's recent PRs in that repository and follow their established section names and style when applicable; treat this skill's template as a default, not a reason to diverge. Preserve the agreed structure through later rewrites and verify the published body matches it.
+
+When asked about repository PR requirements, inspect the target branch's contribution guidance and PR templates, then distinguish repository requirements from this skill's house template and recent-PR conventions. Never present the skill's headings as upstream rules; if none are found, say so.
 
 Use the project's domain terms from `GLOSSARY.md` when it exists. For evidence involving Editor access, content changes, or acceptance, follow the relevant rules in [GAME-DEVELOPMENT.md](../GAME-DEVELOPMENT.md). Technical evidence does not grant creative acceptance. Attribution for the copied visual guidance is in [CREDITS.md](./CREDITS.md).
 
@@ -48,6 +52,8 @@ Use this template:
 Skip preambles and keep prose brief. Use only evidence needed to explain this change. A PR body is not a new validation report or an approval gate.
 
 ### Summary
+
+Lead with what users or agents can do and why it helps, using a concrete workflow in plain language before explaining implementation details; do not make a diagram a prerequisite when short prose is clearer. Distinguish a new tool's limits from behavior changes to existing callers, and describe warnings and explicit risk acceptance without implying an API flag proves human approval.
 
 Pick the smallest view that makes the key point clear.
 
@@ -87,9 +93,9 @@ Use a before-and-after comparison only when it supports the claim. Do not requir
 - For gameplay, state the repeatable input or scenario and starting conditions.
 - For performance, include the build, environment, settings, and workload needed to interpret a relevant measurement.
 - For content changes, reuse available saved-result and reference checks. A source-code implementation alone does not prove that the intended map or asset was saved correctly.
-- Reuse checks already performed for the implementation or review. Do not rerun them just to fill this section.
+- Reuse checks already performed for the implementation or review. Do not rerun them just to fill this section. State what each build actually compiles: a Game-target build can pass while excluding an Editor-only module, so it is not evidence that module compiled for Game.
 - Separate technical correctness from appearance, feel, or other creative acceptance. Report a user's actual verdict if provided; otherwise say pending or not assessed.
-- If no baseline exists or conditions differ, say so rather than implying a controlled comparison.
+- If no baseline exists or conditions differ, say so rather than implying a controlled comparison. Bind each test to the revision or fixture it actually exercised; separate earlier-revision experiments from final-candidate builds and tests so a shared bullet list does not imply they all used the same code.
 
 ### Merge Danger
 

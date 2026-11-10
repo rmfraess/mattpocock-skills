@@ -1,0 +1,13 @@
+# Bulk asset rename / folder move (UE 5.8, scripted)
+
+Proven on a 387-asset folder move plus 357 renames with zero failures and baseline-identical cold loads.
+
+1. **Baseline first.** Per map: actor count, class counts, and per-mesh instance totals from every `InstancedStaticMeshComponent` (count `static_mesh is None` separately). Save to a scratch JSON; compare after cold reload, mapping old mesh names through the rename plan.
+2. **Delete dead content before moving.** Check `get_referencers` from outside the candidate set; delete via `git rm` with the Editor closed.
+3. **Nanite Landscapes block map moves.** A map whose Landscape has `enable_nanite` on fails to save after a move ("Illegal reference to private object … LandscapeNaniteMesh"). Before the move: set it False and save. After: set True and `save_current_level()`: `ALandscapeProxy::PreSave` rebuilds the mesh in the new package.
+4. **Folder/map moves are manual.** `rename_asset` on a map is auto-cancelled (CDO soft-ref prompt). Put the Editor on `new_blank_map` first, then have the user drag folders and maps in the Content Browser. A partly failed manual move is easiest to undo with the Editor closed: `git checkout HEAD -- <old folder>`, delete the new copies, revert any resaved referencers.
+5. **Ordinary assets rename fine by script.** Build an old→new plan, assert unique targets case-insensitively and check names against all of `/Game` (vendor packs clash, e.g. `SM_Rock_01`). Run `EditorAssetLibrary.rename_asset` in batches of ~90 with an append-only log and skip-if-target-exists, so a timed-out call can resume. Then `save_dirty_packages(True, True)`.
+6. **Redirector fix-up without `fixup_referencers`** (absent from 5.8 Python and the toolsets): filter `ObjectRedirector` under `/Game`; collect referencers outside the redirector set; `save_asset(ref, only_if_is_dirty=False)` each; `scan_files_synchronous` them (the registry is stale otherwise); confirm zero referencers; then `delete_asset` each redirector. Deleting ~260 takes ~95 s and reports `timed_out` while still completing: re-query instead of retrying.
+7. **Labels/folders:** strip prefixes per world, then `save_current_level()`; keep no actor/package references across `load_level` (World Memory Leaks crash).
+8. **Text:** regex-replace whole-word old names (longest first), then folder prefixes; extract every `/Game/...` literal from Scripts/Source/Config and check `does_asset_exist or does_directory_exist`; update LFS rules and config map paths; grep open issue bodies.
+9. **Verify:** Editor + Game builds, cold-launch on the new startup map, baseline compare, 0 redirectors, project tests.

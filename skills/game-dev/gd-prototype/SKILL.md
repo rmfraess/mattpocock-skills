@@ -20,7 +20,7 @@ Choose the format that retains the load-bearing behavior:
 - Use a representative performance scene and measurement when cost or frame time is the question.
 - Keep an HTML or browser prototype when it is the simplest faithful way to judge the requested behavior or interface. Read [LOGIC.md](LOGIC.md) or [UI.md](UI.md) for those branches.
 
-A quick substitute that omits the behavior under question is not a useful experiment. Do not add a separate spec, ticket, or approval ceremony for a small prototype.
+A quick substitute that omits the behavior under question is not a useful experiment. Do not add a separate spec, ticket, or approval ceremony for a small prototype. For an Unreal scale check, try the engine's native PIE pawn and input before creating a player class; distinguish a fixed eye-height, no-collision scale probe from real grounded traversal. Follow [references/unreal-scale-probes.md](references/unreal-scale-probes.md) when the user needs to move through a blockout.
 
 ## Bound the work
 
@@ -32,6 +32,6 @@ Save a map, asset, or other output when persistence is needed to replay or compa
 
 ## Observe and hand off
 
-Run or demonstrate the experiment under the stated conditions. Make the relevant state and result observable after each meaningful action. Record the question, setup, relevant configuration, evidence, observed result, and anything still uncertain. For performance, use an approved target when one exists; otherwise report a comparable baseline or an unresolved target, never an invented pass threshold.
+Run or demonstrate the experiment under the stated conditions. Make the relevant state and result observable after each meaningful action. For visual experiments, inspect matched before/after views before expanding exports or capture batches. Record execution validity separately from the design outcome: met, partial or unmet. A functioning control and a technically valid artifact can expose an unresolved or worsened visual cue. End the named experiment at a decisive finding rather than polishing until it appears positive; a partial prototype does not complete a separately requested finished asset. Complete preservation, reopening and export checks required by the promised handoff. Record the question, setup, relevant configuration, evidence, observed result, and anything still uncertain. For performance, use an approved target when one exists; otherwise report a comparable baseline or an unresolved target, never an invented pass threshold.
 
 Let the user determine creative or game-feel acceptance. Record their verdict and the question it settles in the agreed artifact when existing authorization covers that update. Preserve a runnable prototype as primary evidence using the project's existing practice and authorization, and leave a context pointer from the implementation task when useful. Do not adopt prototype code or assets into production here. Production implementation is a separate task with its own scope.

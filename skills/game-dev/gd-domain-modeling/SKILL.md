@@ -48,7 +48,11 @@ When a project-specific term is resolved, update the appropriate `GLOSSARY.md` d
 
 ### Record adaptation provenance when relevant
 
-For adaptations, keep verified source canon distinct from deliberate adaptation decisions, exploratory variants, and approved visual direction. Put relevant source, reference, and evidence pointers in existing project records; label unverified claims and provisional ideas plainly. Do not promote a plausible variant or observed asset into source canon or approved direction, and do not create a new canon database or a required document for every choice.
+For adaptations, keep verified source canon distinct from deliberate adaptation decisions, exploratory variants, and approved visual direction. Put relevant source, reference, and evidence pointers in existing project records; label unverified claims and provisional ideas plainly. Do not promote a plausible variant or observed asset into source canon or approved direction, and do not create a new canon database or a required document for every choice. Do not treat the absence of an explicit source term as a ban on a useful physical interpretation: verify the stated local sequence, test broad real-world analogies against authoritative sources rather than assuming they are universal, and present a plausible model as interpretation for the creative owner to accept. Separate an approved local terrain transition from any unverified extent of its *named* region elsewhere on the map.
+
+### Separate world state from evidence discovery
+
+For source-based scene reconstruction, collect across the authorized corpus before segmenting states at actual in-world changes. Keep fact applicability and observation time separate from book/chapter revelation order; a later passage may establish an earlier condition only with a recorded applicability basis. Do not use in-world event ordering as reader/spoiler ordering, automatically backdate undated descriptions, or interpret an unknown ending as indefinite persistence. Retain unresolved timing and competing claims visibly; a candidate snapshot is not automatic canon approval. Preserve explicit research spoiler boundaries independently of presentation limits.
 
 ### Offer ADRs sparingly
 
