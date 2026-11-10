@@ -16,7 +16,7 @@ Start from the repository root and the working directory. Read the active harnes
 
 - Tracker configuration and repository remotes, to learn where issues live and whether pull or merge requests are a request surface.
 - `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, and `docs/agents/domain.md`, when present.
-- `GLOSSARY.md` or `GLOSSARY-MAP.md`, relevant ADRs, existing game workflow guidance, and local tracker conventions such as `.scratch/`.
+- `GLOSSARY.md` or `GLOSSARY-MAP.md`, legacy `CONTEXT.md` or `CONTEXT-MAP.md`, relevant ADRs, existing game workflow guidance, and local tracker conventions such as `.scratch/`.
 - Whether a triage workflow is actually installed or used before considering its label mapping.
 
 When game-work rules are in scope, read the relevant sections of [GAME-DEVELOPMENT.md](../GAME-DEVELOPMENT.md). Treat it as shared guidance, not a project decision or permission to act. Read only the templates needed to fill a real gap: [GitHub tracker](./issue-tracker-github.md), [GitLab tracker](./issue-tracker-gitlab.md), [local tracker](./issue-tracker-local.md), [triage labels](./triage-labels.md), and [domain guidance](./domain.md).
@@ -31,9 +31,13 @@ If triage is not installed or used, omit its label setup. If the current instruc
 
 For an unset tracker, infer GitHub or GitLab from the repository remote; otherwise reuse local evidence and discuss only an unresolved choice among GitHub, GitLab, local markdown, or the user's existing workflow. Preserve the configured PR/MR request-surface flag. For a new GitHub or GitLab setup, leave that flag off unless the project already uses or the user explicitly requests PR triage.
 
+Verify the exact GitHub or GitLab target is reachable with a read-only `gh repo view <owner/repo>` or `glab repo view <owner/repo>`. If its identity or access is unresolved, report the gap before drafting it as a working tracker. Propose any missing remote configuration or tracker labels as separate setup actions; this documentation-only workflow does not create them.
+
 If a triage workflow is used and its mapping is missing, offer the five canonical roles, `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`, as the default mapping. Ask once whether to keep those names; collect the tracker's exact existing strings only if the user declines. This documents the mapping and does not create tracker labels. Preserve every existing mapped string and add no status vocabulary.
 
 Default to single-context `GLOSSARY.md` and `docs/adr/`. Offer a multi-context layout only when repository discovery finds real monorepo signals, and preserve the existing layout when it is already settled. Resolve any remaining choices one at a time, skipping settled decisions.
+
+If legacy `CONTEXT.md` or `CONTEXT-MAP.md` files exist, propose migration to their `GLOSSARY` names with matching updates to `docs/agents/domain.md`. Do not move files in this documentation-only workflow or write pointers to a migration that has not happened; report the separately authorized migration still needed.
 
 For game-project rules, summarize applicable instructions, prior decisions, and known constraints first. Discuss only unresolved or conflicting choices that materially affect the workflow, such as:
 

@@ -19,7 +19,7 @@ Show the problem space to the user, then start the worker designs. The user can 
 
 ### 2. Spawn parallel workers
 
-Spawn at least three workers in parallel. Give each a separate technical brief with relevant paths, coupling, dependency category, what sits behind the seam, and the project's domain vocabulary. Assign different constraints:
+Spawn at least three workers in parallel, each with a fresh context window. Give each a separate technical brief with relevant paths, coupling, dependency category, what sits behind the seam, and the project's domain vocabulary. Assign different constraints:
 
 - Worker 1: minimize the interface and maximize leverage per entry point.
 - Worker 2: maximize useful flexibility and extension.

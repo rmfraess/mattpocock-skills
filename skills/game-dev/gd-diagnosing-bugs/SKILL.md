@@ -54,6 +54,8 @@ Independent investigations may run in parallel using saved snapshots, isolated c
 
 Write a regression check before the fix when a seam exercises the real failure path. Watch it fail, apply the fix, watch it pass, then rerun the Phase 1 loop against the original scenario. If no correct seam exists, document that limitation instead of adding a misleading shallow test. Use the evidence appropriate to the bug; do not claim an engine or saved-content check that was not run.
 
+If you force red by deliberately mutating code or a fixture, compare it with the pristine baseline to prove the mutation landed before trusting the failure. For binary assets or Editor state, use an appropriate semantic or state comparison under the existing ownership and recovery rules, not an assumed text diff.
+
 ## Phase 6: Clean up and report
 
 Before declaring the diagnosis complete, verify the original scenario no longer reproduces, report regression evidence or the missing-seam limitation, remove temporary instrumentation, and delete or clearly mark throwaway artifacts. State the supported causal hypothesis and its evidence in the handoff or change summary. Report failed, unavailable, and unverified checks plainly.

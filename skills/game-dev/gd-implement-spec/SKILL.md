@@ -12,6 +12,8 @@ If tracker configuration or required project guidance is missing, report the gap
 
 ## Workflow
 
+Start every delegated worker with a fresh context window. Use a fresh implementer for each ticket, including tickets that later receive live Editor ownership; a fresh worker does not imply a second Editor or a different live checkout.
+
 1. Read the spec and tickets. Map their blocking relationships and the currently ready frontier. Keep communication sparse and pass context pointers to the spec, tickets, research notes, and commits rather than duplicating them.
 
 2. Use an exploration worker for ticket-specific research when useful. Have it save notes outside the repository where later workers can read them.
@@ -35,7 +37,7 @@ If tracker configuration or required project guidance is missing, report the gap
 7. After each merge or live-content integration checkpoint, run the relevant checks and record the ticket as integrated only when its changes are present in the integration result and those checks pass. Compute the next frontier from verified integration checkpoints, not tracker closure or a stale blocked-by count. Start newly unblocked isolated workers in parallel only after confirming their worktrees are isolated; assign any required live Editor segment through the existing ownership process.
 
 8. After all tickets are integrated, verify the combined result against the complete parent spec, run the required integration checks, and report skipped or unavailable checks. Then verify `gd-code-review` is available and load it once for the final integrated result. Supply the parent spec as the originating spec, the starting revision, the exact integrated code, map, and asset inventory, tracked diffs and new-file contents, plus relevant saved-result and execution evidence. Reviewers inspect supplied evidence without competing for Editor control. This is one broad integration review, not a second review pipeline for each ticket. If the skill is unavailable, report the dependency and do not silently substitute another review workflow.
-   - Fix verified, actionable findings in one implementer worker, run focused checks for those fixes, and finish with the integration checks. Do not repeat broad reviews indefinitely.
+   - Fix verified, actionable findings in one fresh implementer worker, run focused checks for those fixes, and finish with the integration checks. Do not repeat broad reviews indefinitely.
    - Keep technical verification separate from creative or game-feel acceptance. A reviewer's favorable description is not user approval; record the user's verdict when provided, otherwise mark it pending or not applicable.
 
 9. If an authorized draft PR exists, mark it ready only after review fixes and final checks, then read it back to verify its state. The orchestrator owns final tracker transitions. Apply only those authorized for this run and read each item back. Report the integration branch and distinguish implemented, PR-ready, and closed tickets; these remain separate outcomes.

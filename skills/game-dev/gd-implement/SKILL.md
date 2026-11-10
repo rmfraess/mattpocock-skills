@@ -10,7 +10,7 @@ Implement work already agreed in a spec, ticket, plan, or conversation. Do not r
 
 ## Before editing
 
-1. Resolve a supplied ticket through the configured tracker. Proceed when it identifies one ticket unambiguously. Ask only when genuine ambiguity could select different work.
+1. Fetch a supplied ticket reference through the configured tracker and state its title before editing. Proceed when it identifies one ticket unambiguously. Ask only when genuine ambiguity could select different work.
 2. Capture the repository path, starting revision with `git rev-parse HEAD`, and starting worktree status. Keep pre-existing and unrelated changes distinct from this task.
 3. Before live Editor operations, verify the connected Editor's actual project path and authorized checkout, relevant map and asset identities, current unsaved state, available tools, and assigned Editor owner. A worker's Git worktree does not redirect the Editor. Declare exact targets and relevant shared dependencies before dispatch, serialize overlapping or uncertain write scopes, and use an appropriate existing checkpoint or task-scoped recovery point. Preserve unrelated unsaved work.
 4. If scope, target, ownership, or material starting state is unresolved, stop the affected operation and report what is missing. Reuse existing approvals and project gates; do not add repeated permission prompts.

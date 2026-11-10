@@ -58,7 +58,7 @@ Each ticket is a child issue of the map. Its body holds the question and enough 
 <the decision or investigation this ticket resolves>
 ```
 
-Each ticket carries one existing `wayfinder:<type>` label: `research`, `prototype`, `grilling`, or `task`. Do not create new labels or status vocabulary.
+Each ticket carries one existing `wayfinder:<type>` label: `research`, `prototype`, `grilling`, or `task`. Maps and decision tickets use only `wayfinder:` labels, not implementation triage labels such as `ready-for-agent`. Do not create new labels or status vocabulary.
 
 A session claims a ticket by assigning it to the person or agent driving the map. Re-read the tracker before claiming or changing records, check for competing claims, and read each update back. Assignment is a coordination signal, not an exclusive lock.
 
@@ -74,6 +74,8 @@ Load each named helper explicitly through the host's skill-loading capability, o
 - **Task (HITL or AFK):** Manual work that must happen before a decision can be made, but is not itself a decision, research question, or experiment. The agent drives it where possible; otherwise give the human a precise checklist. Resolve it with what was done and the resulting facts later tickets need.
 
 A grilling session may delegate factual investigation to its background workers. Keep user decisions with the user. Research-ticket workers do their own research without nested dispatch.
+
+Start delegated research workers with fresh context windows. For research notes on `research/<name>` branches, publish the branch within the run's existing publication authority so tracker pointers remain accessible, but open no PR: these branches are not implementation deliverables and are never merged. If publication is not authorized or fails, report the pointer's availability limit rather than claiming it is accessible to later sessions.
 
 ## Fog of war
 
@@ -100,7 +102,7 @@ The user invokes with a loose idea.
 1. **Name the destination.** Load `grilling` explicitly and work with the user to identify what the map is finding its way to: a spec, decision, or change. When game-specific terminology or domain documentation needs active modeling, load `gd-domain-modeling` in a separate call only after verifying it is available. The destination fixes scope, so settle it first.
 2. **Map the frontier.** Grill breadth-first across the effort to surface open decisions and the first steps that can be taken now. Use research for facts, discussion for decisions, and a faithful game experiment for perceptual uncertainty. If no fog remains and the work fits one session, a map is unnecessary; stop and ask how the user wants to proceed.
 3. **Preview before creating records.** Show the destination, Notes, ticket questions and types, parent-child hierarchy, and blocking edges together. If the request is only to discuss or draft, stop without creating records. Otherwise use the invocation's existing creation authorization. Do not add per-ticket approval gates.
-4. **Create the map and specified tickets.** Make tickets children of the map. Wire blockers in a second pass after issue IDs exist. Leave unspecifiable questions in Not yet specified.
+4. **Create the map and specified tickets.** Make tickets children of the map. Wire blockers and write cross-references in a second pass after real issue IDs exist; a placeholder `#<n>` can auto-link to an unrelated issue. Leave unspecifiable questions in Not yet specified.
 5. **Dispatch unblocked research.** Re-read the tracker and choose only open, unblocked, unclaimed research tickets. Claim each by assignment, read back the update, then dispatch one background worker with a self-contained brief. The worker uses `research` directly, without nested dispatch, and saves a cited note on a throwaway `research/<name>` branch with a context pointer from the ticket. The parent checks the note, records the resolution, closes the ticket, and updates Decisions so far. Dispatch blocked research only after it becomes unblocked. Add no per-ticket approval prompt.
 6. **Stop charting** after creating the map and initial tickets, wiring dependencies, and dispatching currently unblocked research. Do not resolve HITL tickets during charting.
 
@@ -110,7 +112,7 @@ The user invokes with a map URL or number. A ticket is optional; without one, ch
 
 1. Load the map's low-resolution view, not every ticket body.
 2. Choose the named ticket or first frontier ticket. Re-read the tracker and verify it is open, unblocked, and unclaimed. Claim it by assignment and read the update back. Report competing claims or updates instead of assuming assignment is exclusive.
-3. Resolve it. For research, the parent claims and checks state, then dispatches one background worker with a bounded brief; the worker researches directly without nested dispatch and saves a cited note on a throwaway `research/<name>` branch linked from the ticket. The parent verifies it. For other tickets, fetch related ticket bodies only as needed and load the skills named in Notes. Check availability first; do not substitute an incompatible helper.
+3. Read the ticket's `wayfinder:<type>` label and resolve it by that type, not an inference from its body. For research, the parent claims and checks state, then dispatches one background worker with a bounded brief; the worker researches directly without nested dispatch and saves a cited note on a throwaway `research/<name>` branch linked from the ticket. The parent verifies it. For other tickets, fetch related ticket bodies only as needed and load the skills named in Notes. Check availability first; do not substitute an incompatible helper.
 4. Record the resolution as a comment, close the issue, and append a context pointer to Decisions so far. Re-read the tracker and verify the comment, status, and map update. Include sourced facts, provisional assumptions, approved decisions, and the user's verdict only as applicable, keeping them distinct. Research needs no per-ticket approval prompt.
 5. Add newly surfaced tickets, creating before wiring blockers. Graduate only questions the answer has made precise, clearing each from Not yet specified. If a ticket is beyond the destination, rule it out of scope. If a decision invalidates other map items, re-read state before updating or deleting them, then verify each change.
 

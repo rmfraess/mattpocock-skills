@@ -18,7 +18,7 @@ Favor the user's named subsystem, pain point, or direction. Otherwise, inspect r
 
 Explore the relevant code and, where available and useful to the named friction, Blueprint or asset data and dependencies. Consider lifecycle, ownership, serialization and saved references, authoring constraints, and runtime cost only when they affect the candidate. This is not a whole-project asset audit. Do not assume a live Editor is available. If live inspection is needed, report the evidence gap and follow [the game-development working guidance](../GAME-DEVELOPMENT.md) for the verified target and Editor owner.
 
-Use delegated exploration where useful. Follow friction rather than rigid heuristics:
+Use delegated exploration where useful, starting each investigator with a fresh context window and a scoped brief. Follow friction rather than rigid heuristics:
 
 - Where does understanding a behavior require tracing many small modules or assets?
 - Where is an interface nearly as complex as its implementation?

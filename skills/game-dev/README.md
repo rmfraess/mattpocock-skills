@@ -49,4 +49,6 @@ Adding this source bucket does not install it into any profile, change runtime a
 
 Derived from `rmfraess/mattpocock-skills` at `f982b24d1d0f632784d0badf8d7b2244bf307db8`, originally authored by Matt Pocock and contributors. The new additive scopes were approved by Ronald Fraess; derivative implementation is by Hermes Agent (Nous Research). Keep bases and GD variants distinct and manually review future source changes against the accepted scopes. Preserve original notices in copied support files.
 
+Selected base updates through `e6c45c030ac0d26b81dff9e69a01f8b50d0f8fb4` are reconciled into nine derivatives: fresh worker contexts and per-ticket implementers, standards discovery, ticket-title confirmation, mutation evidence, seam coverage notes, wayfinding routing and research publication, and tracker-template corrections. Setup remains documentation-only: it detects tracker or legacy-document gaps and proposes separate configuration or migration actions. Shared helpers remain separate dependencies, not copied GD variants.
+
 The source MIT terms are retained verbatim in [LICENSE](LICENSE).

@@ -36,7 +36,7 @@ Look for the originating spec in this order:
 
 ### 3. Identify standards sources
 
-Read repository documents that describe how code and content should be produced, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`. Apply actual engine and project conventions. Smell suggestions are advisory; do not demand extra abstraction, polymorphism, or a rewrite only to satisfy a generic heuristic. Repository standards override the following smell baseline, and each smell remains a judgement call rather than a hard violation. Skip anything tooling already enforces.
+Search the repository for all documents that describe how code and content should be produced. Include `CODING_STANDARDS.md` and `CONTRIBUTING.md` when present, and read the applicable standards. Apply actual engine and project conventions. Smell suggestions are advisory; do not demand extra abstraction, polymorphism, or a rewrite only to satisfy a generic heuristic. Repository standards override the following smell baseline, and each smell remains a judgement call rather than a hard violation. Skip anything tooling already enforces.
 
 - **Mysterious Name:** a function, variable, or type name does not reveal what it does or holds. Rename it; if no honest name fits, the design may be unclear.
 - **Duplicated Code:** the same logic shape appears in multiple hunks or files. Extract the shared shape and call it from each site.
@@ -52,6 +52,8 @@ Read repository documents that describe how code and content should be produced,
 - **Refused Bequest:** a subclass or implementer ignores or overrides most inherited behavior. Drop the inheritance in favor of composition.
 
 ### 4. Spawn both reviewers in parallel
+
+Issue both reviewer calls together, each with a fresh context window, and collect their returned reports before aggregation. If the host delivers results asynchronously, yield for those results rather than polling or treating dispatch as a completed review.
 
 This is review-only. Neither reviewer edits files, commits, fixes findings, invokes `gd-code-review` recursively, or dispatches more reviewers. Implementers may address verified findings and commit afterward.
 

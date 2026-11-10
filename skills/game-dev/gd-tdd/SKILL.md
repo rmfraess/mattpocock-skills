@@ -15,6 +15,8 @@ Test behavior through public interfaces, except for explicitly required storage 
 
 Use project-approved testing guidance supplied by the caller together with the conversation, spec, and ticket. Reuse agreed seams without asking for another confirmation. If no seam is agreed, or a materially different seam is needed, explain why and ask before writing that test.
 
+For each proposed seam, give a one-line note on what it catches and misses, including any engine interaction or saved-content behavior that requires a separate check.
+
 When the shape of an interface or test seam is itself in question, first confirm the adapted `gd-codebase-design` package is available, then load it with the available Skill tool and consult it as a reference. If it is unavailable, report the missing dependency and do not substitute the original `codebase-design` guidance.
 
 ## Anti-patterns
