@@ -4,7 +4,7 @@ Use when the Editor or a level "feels laggy", stutters while moving, or frame ra
 
 ## 1. Measure motion, not idle
 - Disable background throttling first (`PerformanceService.set_background_throttling(False)`), restore it at the end.
-- `PerformanceService.frame_timing()` on a still camera is only the idle baseline. Lag reported "while traversing or moving the camera" often hides from idle readings (idle 7 ms vs 45 ms moving).
+- `StatsToolset.GetFrameTimings` (`vibeue.exec_tool('PerfToolset.StatsToolset', 'GetFrameTimings')`) on a still camera is only the idle baseline. Lag reported "while traversing or moving the camera" often hides from idle readings (idle 7 ms vs 45 ms moving).
 - Reproduce with a scripted flythrough: `scripts/editor_flythrough.py` precomputes a ground-following path and moves the level viewport camera from a slate post-tick callback, logging per-frame dt plus a game/render/RHI/GPU split every 8 frames. Run it from `execute_python`, then read the `PERFFLY` log line from a separate call; the callback runs across Editor frames, which a blocking Python loop cannot.
 - Fly the same path for every probe, run baseline twice, and treat wall-clock time far beyond the path duration as a sign that frames hit the engine dt clamp.
 - A second identical run separates one-off warm-up (shader compile, streaming) from steady cost.

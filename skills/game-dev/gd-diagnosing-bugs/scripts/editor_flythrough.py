@@ -4,7 +4,7 @@
 #   m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); sys.modules['fly'] = m
 #   m.make_path(cx, cy, exclude_label='QR_PCG_Forest'); m.start('baseline')
 # Then, in a later tool call, read the 'PERFFLY <tag>' line from the project log and OUT_DIR/perf-dts-<tag>.json.
-import unreal, json, math, os
+import unreal, vibeue, json, math, os
 
 OUT_DIR = os.environ.get('TMPDIR', unreal.Paths.project_saved_dir())
 SPEED = 800.0  # cm/s
@@ -40,8 +40,8 @@ def _pos(d):
 def _tick(dt):
     state['dts'].append(dt); state['t'] += dt
     if len(state['dts']) % 8 == 0:
-        j = json.loads(unreal.PerformanceService.frame_timing())
-        state['thr'].append([j.get(k) for k in ('game_thread_ms', 'render_thread_ms', 'rhi_thread_ms', 'gpu_ms', 'frame_ms')])
+        j = vibeue.exec_tool('PerfToolset.StatsToolset', 'GetFrameTimings')
+        state['thr'].append([j.get(k) for k in ('gameThreadMs', 'renderThreadMs', 'rhiThreadMs', 'gpuMs', 'frameMs')])
     p, yaw = _pos(state['t'] * SPEED)
     if p is None:
         unreal.unregister_slate_post_tick_callback(state['handle'])
